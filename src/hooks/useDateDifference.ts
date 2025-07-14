@@ -1,16 +1,21 @@
+import { DateDifferenceInput } from '@/types/dateInterfaces';
 import { useState } from 'react';
+
+const calculateDateDifferencePure = ({
+  baseDate: base,
+  targetDate: target,
+}: DateDifferenceInput) => {
+  const baseDate = new Date(base.year, base.month, base.day);
+  const targetDate = new Date(target.year, target.month - 1, target.day);
+  return Math.floor((targetDate.getTime() - baseDate.getTime()) / (1000 * 60 * 60 * 24));
+};
 
 const useDateDifference = () => {
   const [difference, setDifference] = useState<number | null>(null);
 
-  const calculateDateDifference = (year: number, month: number, day: number) => {
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    const inputDate = new Date(year, month - 1, day);
-    const differenceInDays = Math.floor(
-      (inputDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24)
-    );
-    setDifference(differenceInDays);
+  const calculateDateDifference = ({ baseDate, targetDate }: DateDifferenceInput) => {
+    const diff = calculateDateDifferencePure({ baseDate, targetDate });
+    setDifference(diff);
   };
 
   return { difference, calculateDateDifference };

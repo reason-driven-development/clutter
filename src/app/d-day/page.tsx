@@ -1,13 +1,34 @@
 'use client';
-import useDateInputs from '../../hooks/useDateInputs';
-import useDateDifference from '../../hooks/useDateDifference';
+
+import useDateDifference from '@/hooks/useDateDifference';
+import useDateInputs from '@/hooks/useDateInputs';
+import { DateYearMonthDay } from '@/types/dateInterfaces';
 
 const Dday = () => {
-  const { year, setYear, month, setMonth, day, setDay } = useDateInputs(2024, 7, 1);
+  const { year, setYear, month, setMonth, day, setDay } = useDateInputs({
+    year: 2024,
+    month: 7,
+    day: 1,
+  });
   const { difference, calculateDateDifference } = useDateDifference();
 
+  const base = new Date();
+  const baseDate: DateYearMonthDay = {
+    year: base.getFullYear(),
+    month: base.getMonth(),
+    day: base.getDate(),
+  };
+
   const handleCalculate = () => {
-    calculateDateDifference(year, month, day);
+    // 타입 안전성을 위해 number로 변환
+    const targetYear = typeof year === 'number' ? year : 0;
+    const targetMonth = typeof month === 'number' ? month : 1;
+    const targetDay = typeof day === 'number' ? day : 1;
+
+    calculateDateDifference({
+      baseDate,
+      targetDate: { year: targetYear, month: targetMonth, day: targetDay },
+    });
   };
 
   return (
